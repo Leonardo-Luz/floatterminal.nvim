@@ -42,3 +42,9 @@ M.setup = function(opts)
   ---@deprecated
   vim.api.nvim_create_user_command("Floaterminal", M.toggle_terminal, { nargs = 1 })
 end
+
+---Config floatterminal plugin
+---@param opts setup.Opts
+M.config = function(opts)
+  M.setup(opts)
+end
