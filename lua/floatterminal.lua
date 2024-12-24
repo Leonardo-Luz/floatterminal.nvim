@@ -15,16 +15,19 @@ M.toggle_terminal = function(state)
   end
 end
 
+local states = {}
+
 ---@class setup.Opts
 ---@field num integer: Number of floating terminal you want. DEFAULT 3
 ---@field keymap string: Keymap to open floating terminal, will be your key map plus the number of the terminal, from 1 to num. DEFAULT: <leader>t
 
 ---Setup floatterminal plugin
----@param opts setup.Opts
+---@param opts setup.Opts|nil
 M.setup = function(opts)
+  -- local config = require('config') -- WIP
+
   opts = opts or {}
 
-  local states = {}
   for i = 0, (opts.num or 3) - 1 do
     states[i] = { floating = { buf = -1, win = -1 } }
   end
@@ -41,10 +44,4 @@ M.setup = function(opts)
 
   ---@deprecated
   vim.api.nvim_create_user_command("Floaterminal", M.toggle_terminal, { nargs = 1 })
-end
-
----Config floatterminal plugin
----@param opts setup.Opts
-M.config = function(opts)
-  M.setup(opts)
 end
