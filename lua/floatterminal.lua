@@ -10,6 +10,10 @@ M.toggle_terminal = function(state)
     if vim.bo[state.floating.buf].buftype ~= "terminal" then
       vim.cmd.terminal()
     end
+
+    vim.keymap.set("n", "<Esc><Esc>", function()
+      vim.api.nvim_win_hide(state.floating.win)
+    end, { buffer = state.floating.buf })
   else
     vim.api.nvim_win_hide(state.floating.win)
   end
