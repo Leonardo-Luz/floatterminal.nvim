@@ -38,7 +38,7 @@ local floatterminal_command = function(opts)
     return
   end
 
-  local state = states[index]
+  local state = states[index - 1]
 
   M.toggle_terminal(state)
 end
