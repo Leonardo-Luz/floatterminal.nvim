@@ -25,7 +25,7 @@ local floatterminal_command = function(opts)
   local index = tonumber(opts.args)
 
   if index == nil then
-    vim.print("Inválid argument")
+    vim.print("Invalid argument")
     return
   end
 
