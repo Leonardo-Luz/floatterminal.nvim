@@ -21,11 +21,20 @@ end
 
 local states = {}
 
+local config = {
+  num = 3,
+}
+
 local floatterminal_command = function(opts)
   local index = tonumber(opts.args)
 
   if index == nil then
     vim.print("Invalid argument")
+    return
+  end
+
+  if index > config.num then
+    vim.print("Argument should be between 1 and " .. config.num)
     return
   end
 
@@ -44,6 +53,8 @@ vim.api.nvim_create_user_command("Floatterminal", floatterminal_command, { nargs
 ---@param opts setup.Opts|nil
 M.setup = function(opts)
   opts = opts or {}
+
+  config.num = opts.num or 3
 
   for i = 0, (opts.num or 3) - 1 do
     states[i] = { floating = { buf = -1, win = -1 } }
