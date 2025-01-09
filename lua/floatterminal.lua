@@ -21,6 +21,21 @@ end
 
 local states = {}
 
+local floatterminal_command = function(opts)
+  local index = tonumber(opts.args)
+
+  if index == nil then
+    vim.print("Inválid argument")
+    return
+  end
+
+  local state = states[index]
+
+  M.toggle_terminal(state)
+end
+
+vim.api.nvim_create_user_command("Floatterminal", floatterminal_command, { nargs = 1 })
+
 ---@class setup.Opts
 ---@field num integer?: Number of floating terminal you want. DEFAULT 3
 ---@field keymap string?: Keymap to open floating terminal, will be your key map plus the number of the terminal, from 1 to num. DEFAULT: <leader>t
