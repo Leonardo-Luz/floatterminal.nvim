@@ -28,8 +28,6 @@ local states = {}
 ---Setup floatterminal plugin
 ---@param opts setup.Opts|nil
 M.setup = function(opts)
-  -- local config = require('config') -- WIP
-
   opts = opts or {}
 
   for i = 0, (opts.num or 3) - 1 do

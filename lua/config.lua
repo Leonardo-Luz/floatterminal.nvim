@@ -1,4 +1,0 @@
--- WIP
--- local default_config = {
---   states = {},
--- }
