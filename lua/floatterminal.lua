@@ -33,7 +33,7 @@ local floatterminal_command = function(opts)
     return
   end
 
-  if index > config.num then
+  if index > config.num or index < 1 then
     vim.print("Argument should be between 1 and " .. config.num)
     return
   end
