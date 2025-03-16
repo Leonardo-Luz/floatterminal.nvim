@@ -2,11 +2,13 @@ local M = {}
 
 local floatwindow = require("floatwindow")
 
+local window_config = nil
+
 ---Creates a floating terminal that keeps its state when closed
 ---@param state state.Floating
 M.toggle_terminal = function(state)
   if not vim.api.nvim_win_is_valid(state.floating.win) then
-    state.floating = floatwindow.create_floating_window({ floating = state.floating })
+    state.floating = floatwindow.create_floating_window({ opts = window_config, floating = state.floating })
     if vim.bo[state.floating.buf].buftype ~= "terminal" then
       vim.cmd.terminal()
     end
@@ -46,13 +48,16 @@ end
 vim.api.nvim_create_user_command("Floatterminal", floatterminal_command, { nargs = 1 })
 
 ---@class setup.Opts
----@field num integer?: Number of floating terminal you want. DEFAULT 3
----@field keymap string?: Keymap to open floating terminal, will be your key map plus the number of the terminal, from 1 to num. DEFAULT: <leader>t
+---@field num integer?: Optional: Number of floating terminal you want. DEFAULT 3
+---@field keymap string?: Optional: Keymap to open floating terminal, will be your key map plus the number of the terminal, from 1 to num. DEFAULT: <leader>t
+---@field window_config vim.api.keyset.win_config?: Optional: window opts
 
 ---Setup floatterminal plugin
 ---@param opts setup.Opts|nil
 M.setup = function(opts)
   opts = opts or {}
+
+  window_config = opts.window_config
 
   config.num = opts.num or 3
 

@@ -9,7 +9,7 @@
 
 **Dependencies:**
 
-* `leonardo-luz/floatwindow`
+* `leonardo-luz/floatwindow.nvim`
 
 **Installation:**  Add `leonardo-luz/floatterminal.nvim` to your Neovim plugin manager (e.g., `init.lua` or `plugins/floatterminal.lua`).
 
@@ -17,13 +17,15 @@
 {
     'leonardo-luz/floatterminal.nvim',
     opts = {
-        num = 3,  -- Maximum number of floaterminals (default: 3)
-        keymap = '<leader>t', -- Keymapping to open a floaterminal (default: `<leader>t`)
+        num = 3,  -- Optional: Maximum number of floaterminals (default: 3)
+        keymap = '<leader>t', -- Optional: Keymapping to open a floaterminal (default: `<leader>t`)
+        window_config = {}, -- Optional: Terminal window style
     },
 },
 ```
 
 **Usage:**
 
-* `<leader>t{1, num}`: Opens a floaterminal.  Replace `{1, num}` with the desired floaterminal number (1 to `num` as configured above).
-* `<Esc><Esc>`: Closes the currently active floaterminal.
+* `:Floatterminal {args}`: Opens a floatterminal
+* `<leader>t{1, num}`: Opens a floatterminal.  Replace `{1, num}` with the desired floatterminal number (1 to `num` as configured above).
+* `<Esc><Esc>`: Closes the currently active floatterminal.
