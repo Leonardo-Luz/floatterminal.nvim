@@ -2,6 +2,26 @@ local M = {}
 
 local floatwindow = require("floatwindow")
 
+local win_width = vim.api.nvim_win_get_width(0)
+local win_height = vim.api.nvim_win_get_height(0)
+local float_width = math.floor(win_width * 0.9)
+local float_height = math.floor((win_height * 0.6) / 2)
+local row = (win_height - math.floor(float_height / 2)) - 8
+local col = math.floor((win_width - float_width) / 2)
+
+local preset_window_config = {
+  bar = {
+    relative = 'editor',
+    style = 'minimal',
+    width = float_width,
+    height = float_height,
+    row = row,
+    col = col,
+    border = 'rounded',
+  },
+  float = nil,
+}
+
 local window_config = nil
 
 ---Creates a floating terminal that keeps its state when closed
@@ -13,9 +33,21 @@ M.toggle_terminal = function(state)
       vim.cmd.terminal()
     end
 
+    local float = state.floating
+
     vim.keymap.set("n", "<Esc><Esc>", function()
-      vim.api.nvim_win_hide(state.floating.win)
-    end, { buffer = state.floating.buf })
+      vim.api.nvim_win_hide(float.win)
+    end, { buffer = float.buf })
+
+    vim.keymap.set('n', '<leader>tk', function()
+      window_config = preset_window_config.float
+      floatwindow.set_window_config(float.win, window_config)
+    end, { buffer = float.buf })
+
+    vim.keymap.set('n', '<leader>tj', function()
+      window_config = preset_window_config.bar
+      floatwindow.set_window_config(float.win, window_config)
+    end, { buffer = float.buf })
   else
     vim.api.nvim_win_hide(state.floating.win)
   end
@@ -28,7 +60,9 @@ local config = {
 }
 
 local floatterminal_command = function(opts)
-  local index = tonumber(opts.args)
+  local index, command = opts.args:match("(%d*)[ ]*(.*)")
+
+  index = tonumber(index or opts.args)
 
   if index == nil then
     vim.print("Invalid argument")
@@ -43,21 +77,27 @@ local floatterminal_command = function(opts)
   local state = states[index - 1]
 
   M.toggle_terminal(state)
+
+  if vim.api.nvim_win_is_valid(state.floating.win) and command and command:gsub(" ", ""):len() > 0 then
+    vim.print(command)
+    local clear = vim.api.nvim_replace_termcodes(command .. "<CR><C-\\><C-N>", true, false, true)
+    vim.api.nvim_feedkeys("i" .. clear, "n", false)
+  end
 end
 
-vim.api.nvim_create_user_command("Floatterminal", floatterminal_command, { nargs = 1 })
+vim.api.nvim_create_user_command("Floatterminal", floatterminal_command, { nargs = '*' })
 
 ---@class setup.Opts
 ---@field num integer?: Optional: Number of floating terminal you want. DEFAULT 3
 ---@field keymap string?: Optional: Keymap to open floating terminal, will be your key map plus the number of the terminal, from 1 to num. DEFAULT: <leader>t
----@field window_config vim.api.keyset.win_config?: Optional: window opts
+---@field window_config 'bar'|'float'?: Optional: 'bar' | 'float'
 
 ---Setup floatterminal plugin
 ---@param opts setup.Opts|nil
 M.setup = function(opts)
   opts = opts or {}
 
-  window_config = opts.window_config
+  window_config = (opts.window_config == 'bar' and preset_window_config.bar) or preset_window_config.float
 
   config.num = opts.num or 3
 
