@@ -4,22 +4,36 @@ local floatwindow = require("floatwindow")
 
 local win_width = vim.api.nvim_win_get_width(0)
 local win_height = vim.api.nvim_win_get_height(0)
-local float_width = math.floor(win_width * 0.9)
-local float_height = math.floor((win_height * 0.6) / 2)
-local row = (win_height - math.floor(float_height / 2)) - 8
-local col = math.floor((win_width - float_width) / 2)
+local bar_width = math.floor(win_width * 0.9)
+local bar_height = math.floor((win_height * 0.6) / 2)
+local row = (win_height - math.floor(bar_height / 2)) - 8
+local col = math.floor((win_width - bar_width) / 2)
+
+local float_width = math.floor(win_width * 0.8)
+local float_height = math.floor(win_height * 0.8)
+
+local float_row = math.floor((win_height - float_height) / 2)
+local float_col = math.floor((win_width - float_width) / 2)
 
 local preset_window_config = {
   bar = {
     relative = 'editor',
     style = 'minimal',
-    width = float_width,
-    height = float_height,
+    width = bar_width,
+    height = bar_height,
     row = row,
     col = col,
     border = 'rounded',
   },
-  float = nil,
+  float = {
+    relative = "editor",
+    width = float_width,
+    height = float_height,
+    row = float_row,
+    col = float_col,
+    style = "minimal",
+    border = "rounded",
+  }
 }
 
 local window_config = nil
@@ -41,12 +55,12 @@ M.toggle_terminal = function(state)
 
     vim.keymap.set('n', '<leader>tk', function()
       window_config = preset_window_config.float
-      floatwindow.set_window_config(float.win, window_config)
+      vim.api.nvim_win_set_config(float.win, window_config or {})
     end, { buffer = float.buf })
 
     vim.keymap.set('n', '<leader>tj', function()
       window_config = preset_window_config.bar
-      floatwindow.set_window_config(float.win, window_config)
+      vim.api.nvim_win_set_config(float.win, window_config or {})
     end, { buffer = float.buf })
   else
     vim.api.nvim_win_hide(state.floating.win)
